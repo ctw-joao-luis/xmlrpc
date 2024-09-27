@@ -23,7 +23,7 @@ export class XmlRpcServer {
   }
 
   async listen(port?: number, hostname?: string, backlog?: number): Promise<void> {
-    return await this.server.listen(port, hostname, backlog);
+    await this.server.listen(port, hostname, backlog);
   }
 
   close(): void {
@@ -33,7 +33,7 @@ export class XmlRpcServer {
   setHandler(methodName: string, handler: XmlRpcMethodHandler): void {
     this.xmlRpcHandlers.set(methodName, handler);
   }
-
+  // eslint-disable-next-line @lichtblick/prefer-hash-private
   private _requestHandler = async (req: HttpRequest): Promise<HttpResponse> => {
     let methodName: string;
     let args: XmlRpcValue[];
@@ -87,6 +87,7 @@ export class XmlRpcServer {
     };
   };
 
+  // eslint-disable-next-line @lichtblick/prefer-hash-private
   private _methodCallHandler = async (
     methodName: string,
     args: XmlRpcValue[],

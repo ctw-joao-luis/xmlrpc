@@ -6,17 +6,17 @@ ignorePatterns:
   - dist
 
 extends:
-  - plugin:@foxglove/base
-  - plugin:@foxglove/jest
+  - plugin:@lichtblick/base
+  - plugin:@lichtblick/jest
 
 overrides:
   - files: ["examples/**/*.ts"]
     extends:
-      - plugin:@foxglove/typescript
+      - plugin:@lichtblick/typescript
     parserOptions:
       project: [./examples/tsconfig.json]
   - files: ["src/**/*.ts"]
     extends:
-      - plugin:@foxglove/typescript
+      - plugin:@lichtblick/typescript
     parserOptions:
       project: [./tsconfig.json, ./tsconfig.dts.json]

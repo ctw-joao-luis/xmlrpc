@@ -4,12 +4,12 @@ import { HttpHandler, HttpServer } from "../HttpTypes";
 
 export class HttpServerNodejs implements HttpServer {
   handler: HttpHandler;
-  private _server: http.Server;
+  #server: http.Server;
 
   constructor() {
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     this.handler = () => Promise.resolve({ statusCode: 404 });
-    this._server = new http.Server((req, res) => {
+    this.#server = new http.Server((req, res) => {
       // Read the full request body into a string
       const chunks: Uint8Array[] = [];
       req.on("data", (chunk: Uint8Array) => chunks.push(chunk));
@@ -43,16 +43,17 @@ export class HttpServerNodejs implements HttpServer {
   }
 
   url(): string | undefined {
-    const addr = this._server.address();
+    const addr = this.#server.address();
     if (addr == undefined || typeof addr === "string") {
       return addr ?? undefined;
     }
     const hostname = addr.address === "::" ? "[::]" : addr.address;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     return `http://${hostname}${addr.port != undefined ? ":" + String(addr.port) : ""}/`;
   }
 
   port(): number | undefined {
-    const addr = this._server.address();
+    const addr = this.#server.address();
     if (addr == undefined || typeof addr === "string") {
       return undefined;
     }
@@ -60,16 +61,16 @@ export class HttpServerNodejs implements HttpServer {
   }
 
   async listen(port?: number, hostname?: string, backlog?: number): Promise<void> {
-    return await new Promise((resolve, reject) => {
-      this._server.on("error", reject);
-      this._server.listen(port, hostname, backlog, () => {
-        this._server.removeListener("error", reject);
+    await new Promise<void>((resolve, reject) => {
+      this.#server.on("error", reject);
+      this.#server.listen(port, hostname, backlog, () => {
+        this.#server.removeListener("error", reject);
         resolve();
       });
     });
   }
 
   close(): void {
-    this._server.close();
+    this.#server.close();
   }
 }

@@ -36,7 +36,9 @@ export function serializeMethodCall(
     .txt(method)
     .up()
     .ele("params");
-  params.forEach((param) => serializeValue(param, xml.ele("param")));
+  params.forEach((param) => {
+    serializeValue(param, xml.ele("param"));
+  });
 
   // Includes the <?xml ...> declaration
   return xml.doc().toString();
@@ -68,7 +70,7 @@ function serializeValue(value: XmlRpcValue, xml: XMLBuilder) {
   let next;
 
   while (stack.length > 0) {
-    current = stack[stack.length - 1] as ValueInfo;
+    current = stack[stack.length - 1]!;
 
     if (current.index != undefined) {
       // Iterating a compound
@@ -95,6 +97,7 @@ function serializeValue(value: XmlRpcValue, xml: XMLBuilder) {
           stack.pop();
           break;
         case "object":
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (current.value == undefined) {
             valueNode.ele("nil");
             stack.pop();
@@ -136,7 +139,7 @@ function getNextItemsFrame(frame: ValueInfo) {
 
   if (frame.keys != undefined && frame.index != undefined) {
     if (frame.index < frame.keys.length) {
-      const key = frame.keys[frame.index++] as string;
+      const key = frame.keys[frame.index++]!;
       const member = frame.xml.ele("member").ele("name").txt(key).up();
       nextFrame = {
         value: (frame.value as XmlRpcStruct)[key],
@@ -158,7 +161,7 @@ function getNextItemsFrame(frame: ValueInfo) {
   return nextFrame;
 }
 
-// eslint-disable-next-line @foxglove/no-boolean-parameters
+// eslint-disable-next-line @lichtblick/no-boolean-parameters
 function appendBoolean(value: boolean, xml: XMLBuilder) {
   xml.ele("boolean").txt(value ? "1" : "0");
 }
