@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --mode skip-build
         env:
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false #change
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false #change1
 
       - name: Set up Git
         run: |
